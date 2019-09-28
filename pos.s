@@ -1,3 +1,4 @@
+requireend lib/curses/curses.s
 requireend lib/std/io/fput.s
 requireend lib/std/mem/memmove.s
 
@@ -45,6 +46,9 @@ call memmove
 ret
 
 label posDraw ; draw ascii board to stdout
+mov r0 0
+mov r1 0
+call cursesSetPosXY
 ; Loop over all rows, starting from Rank 8
 mov r1 7 ; y
 label posDrawYLoopStart
