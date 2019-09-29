@@ -7,6 +7,7 @@ requireend lib/std/proc/exit.s
 
 requireend move.s
 requireend pos.s
+requireend search.s
 
 const LineYInput 9
 const LineYHelp 10
@@ -129,7 +130,10 @@ jmp runCommandWaitForInput
 
 ; runCommand sub functions
 label runCommandComputer
-; TODO: this - choose move then make it both virtually and on screen
+; Choose move
+call search
+; Make move (also updating screen)
+call makeMoveWithScreen
 ret
 
 label runCommandMove
