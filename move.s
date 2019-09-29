@@ -14,7 +14,15 @@ mov r2 PieceTypeNone
 jmp moveCreate
 
 label moveCreate ; (r0=fromsq, r1=tosq, r2=promopiecetype) - returns move in r0
-mov r0 MoveInvalid ; TODO: this
+; incorporate fromsq
+mov r3 7
+shl r0 r0 r3
+; incorporate tosq
+or r0 r0 r1
+; incorporate promo type
+mov r3 14
+shl r2 r2 r3
+or r0 r0 r2
 ret
 
 label makeMoveWithScreen ; (r0=move) - makes a move on the virtual board, and updates the board on screen
