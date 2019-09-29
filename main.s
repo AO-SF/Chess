@@ -13,7 +13,7 @@ const LineYHelp 10
 const LineYStatus 11
 
 db commandPromptStr 'Enter command: ',0
-db commandHelpStr '(m - human move, c - computer move, r - reset, q - quit)',0
+db commandHelpStr '(m - player move, c - computer move, r - reset, q - quit)',0
 db commandInvalidStr 'Invalid command: ',0
 
 db humanMovePromptStr 'Enter move: ',0
