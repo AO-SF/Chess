@@ -7,3 +7,7 @@ ret
 label moveFromStr ; (r0=str) - returns move in r0, or MoveInvalid if bad str. str can be terminated by null byte or newline
 mov r0 MoveInvalid ; TODO: this
 ret
+
+label makeMoveWithScreen ; (r0=move) - makes a move on the virtual board, and updates the board on screen
+; TODO: this
+ret

@@ -169,7 +169,7 @@ pop16 r0 ; restore move
 skipneqz r1
 jmp humanMoveIllegal
 ; Make move (contained in r0)
-; TODO: update board virtually and on screen
+call makeMoveWithScreen
 ret
 label humanMoveInvalid
 mov r0 0
