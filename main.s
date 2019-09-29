@@ -8,11 +8,20 @@ requireend lib/std/proc/exit.s
 requireend move.s
 requireend pos.s
 
-db humanMovePromptStr 'Your move: ',0
+const LineYInput 9
+const LineYHelp 10
+const LineYStatus 11
+
+db commandPromptStr 'Enter command: ',0
+db commandHelpStr '(m - human move, c - computer move, r - reset, q - quit)',0
+db commandInvalidStr 'Invalid command: ',0
+
+db humanMovePromptStr 'Enter move: ',0
 db humanMoveInvalidStr 'Invalid move',0
 db humanMoveIllegalStr 'Illegal move',0
 
-ab humanMoveInputStr 8
+const humanMoveInputStrSize 8
+ab humanMoveInputStr humanMoveInputStrSize
 
 ; Signal handlers (must be in first 256 bytes)
 jmp start
@@ -31,34 +40,116 @@ syscall
 ; New game - reset board in memory and on screen
 mov r0 0
 call cursesSetEcho
-call cursesClearScreen
-call posReset
-call posDraw
+call resetGame
 
-label gameLoopStart
-
-; Human to move
-call humanMove
-
+; Command loop
+label commandLoopStart
+call runCommand
 ; TODO: check for end of game
-
-; Computer move
-call computerMove
-
-; TODO: check for end of game
-
-; Loop for next move
-jmp gameLoopStart
+jmp commandLoopStart
 
 ; Quit
 label quit
+mov r0 1
+call cursesSetEcho
 call cursesReset
 
 ; Exit
 mov r0 0
 call exit
 
-label humanMove ; Prompt for legal move and make it on virtual board and on screen
+; Reset board and screen for new game
+label resetGame
+call cursesClearScreen
+call posReset
+call posDraw
+ret
+
+; Run command - grab and run command
+label runCommand
+; Print help string
+mov r0 0
+mov r1 LineYHelp
+call cursesSetPosXY
+call cursesClearLine
+mov r0 commandHelpStr
+call puts0
+; Print prompt
+mov r0 0
+mov r1 LineYInput
+call cursesSetPosXY
+call cursesClearLine
+mov r0 commandPromptStr
+call puts0
+; Wait for character from user
+label runCommandWaitForInput
+mov r0 15
+mov r1 LineYInput
+call cursesSetPosXY
+label runCommandWaitForInputLoop
+call cursesGetChar
+mov r1 256
+cmp r1 r0 r1
+skipneq r1
+jmp runCommandWaitForInputLoop
+; Clear status line
+push8 r0
+mov r0 0
+mov r1 LineYStatus
+call cursesSetPosXY
+call cursesClearLine
+pop8 r0
+; Handle command
+mov r1 'c'
+cmp r1 r0 r1
+skipneq r1
+jmp runCommandComputer
+mov r1 'm'
+cmp r1 r0 r1
+skipneq r1
+jmp runCommandMove
+mov r1 'q'
+cmp r1 r0 r1
+skipneq r1
+jmp quit ; lack of ret means stack is broken but does no harm
+mov r1 'r'
+cmp r1 r0 r1
+skipneq r1
+jmp runCommandReset
+; Otherwise bad command - print message and loop again for another attempt
+push8 r0
+mov r0 0
+mov r1 LineYStatus
+call cursesSetPosXY
+mov r0 commandInvalidStr
+call puts0
+pop8 r0
+call putc0
+jmp runCommandWaitForInput
+
+; runCommand sub functions
+label runCommandComputer
+; TODO: this - choose move then make it both virtually and on screen
+ret
+
+label runCommandMove
+; grab and make move
+call humanMove
+; reset prompt str
+mov r0 0
+mov r1 LineYInput
+call cursesSetPosXY
+call cursesClearLine
+mov r0 commandPromptStr
+call puts0
+ret
+
+label runCommandReset
+call resetGame ; reset game state and redraw screen
+ret ; return from runCommand
+
+; user move input - prompt for legal move and make it on virtual board and on screen
+label humanMove
 label humanMoveGrabLoopStart
 ; Prompt for a move and check if invalid
 call humanMoveGrab
@@ -77,32 +168,37 @@ jmp humanMoveIllegal
 ; TODO: update board virtually and on screen
 ret
 label humanMoveInvalid
-call cursesClearLine ; clear existing message (if any)
+mov r0 0
+mov r1 LineYStatus
+call cursesSetPosXY
 mov r0 humanMoveInvalidStr
 call puts0
-jmp humanMoveGrabLoopStart
+ret
 label humanMoveIllegal
-call cursesClearLine ; clear existing message (if any)
+mov r0 0
+mov r1 LineYStatus
+call cursesSetPosXY
 mov r0 humanMoveIllegalStr
 call puts0
-jmp humanMoveGrabLoopStart
+ret
 
 label humanMoveGrab ; Prompts once for a move, returns move in r0
 ; Print prompt
 mov r0 0
-mov r1 9
+mov r1 LineYInput
 call cursesSetPosXY
-call cursesClearLine ; clear existing value (if any)
+call cursesClearLine
 mov r0 humanMovePromptStr
 call puts0
 ; Grab move string
+mov r0 1
+call cursesSetEcho
 mov r0 humanMoveInputStr
-mov r1 8
+mov r1 humanMoveInputStrSize
 call gets0
+mov r0 0
+call cursesSetEcho
 ; Convert string to move and return
+mov r0 humanMoveInputStr
 call moveFromStr
-ret
-
-label computerMove
-; TODO: this - choose move then make it both virtually and on screen
 ret
