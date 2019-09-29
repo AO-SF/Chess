@@ -3,7 +3,6 @@
 requireend pos.s
 
 const MoveInvalid 0
-const moveToStrMinSize 6
 
 label moveIsLegal ; (r0=move) - returns 1/0 in r0 for legal/illegal
 mov r0 0 ; TODO: this
