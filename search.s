@@ -54,14 +54,43 @@ mov r5 7
 shl r4 r4 r5
 or r4 r4 r3
 ; Make move
-; TODO: this
+push8 r0
+push8 r1
+push16 r2
+push8 r3
+push16 r4
+mov r0 r4
+call makeMove
+mov r5 r0
+pop16 r4
+pop8 r3
+pop16 r2
+pop8 r1
+pop8 r0
+push8 r5 ; save capPiece on stack for now (used by undoMove and other logic)
 ; Is king left attacked (i.e. in check)?
 ; TODO: this - if so, skip 'recursive search' part and skip straight to 'undo move'
 ; Recursive search
 ; TODO: this
 ; Undo move
-; TODO: this
+pop8 r5 ; grab capPiece
+push8 r5 ; also save capPiece again for later
+push8 r0
+push8 r1
+push16 r2
+push8 r3
+mov r0 r4
+mov r1 r5
+call undoMove
+pop8 r3
+pop16 r2
+pop8 r1
+pop8 r0
 ; If move captured a piece then end of ray so break out of loop
+pop8 r5 ; grab capPiece
+cmp r5 r5 r5
+skipeqz r5
+jmp searchMovementToSqLoopEnd
 ; TODO: this
 ; If moving piece is not a slider, break out of loop
 mov r5 PieceFlagNotSlider
