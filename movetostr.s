@@ -25,7 +25,7 @@ mov r3 11
 shr r2 r0 r3
 mov r3 7
 and r2 r2 r3
-mov r3 '0'
+mov r3 '1'
 add r2 r2 r3
 store8 r1 r2
 inc r1
@@ -42,7 +42,7 @@ mov r3 4
 shr r2 r0 r3
 mov r3 7
 and r2 r2 r3
-mov r3 '0'
+mov r3 '1'
 add r2 r2 r3
 store8 r1 r2
 inc r1

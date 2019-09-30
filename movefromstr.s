@@ -24,7 +24,7 @@ or r4 r4 r1
 ; Inspect 2nd character for from-sq Y coordinate
 load8 r1 r0
 inc r0
-mov r2 '0'
+mov r2 '1'
 sub r1 r1 r2
 ; Bad 2nd character?
 mov r2 0
@@ -58,7 +58,7 @@ or r4 r4 r1 ; lower 3 bits of toSq
 ; Inspect 4th character for from-sq Y coordinate
 load8 r1 r0
 inc r0
-mov r2 '0'
+mov r2 '1'
 sub r1 r1 r2
 ; Bad 4th character?
 mov r2 0
