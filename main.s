@@ -14,6 +14,7 @@ requireend movetostr.s
 requireend pos.s
 requireend posdraw.s
 requireend search.s
+requireend square.s
 
 const LineYInput 10
 const LineYHelp 11
