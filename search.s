@@ -63,7 +63,11 @@ or r4 r4 r3
 ; If move captured a piece then end of ray so break out of loop
 ; TODO: this
 ; If moving piece is not a slider, break out of loop
-; TODO: this
+mov r5 PieceFlagNotSlider
+and r5 r1 r5
+cmp r5 r5 r5
+skipeqz r5
+jmp searchMovementToSqLoopEnd
 ; Loop again to try next toSq in this direction
 jmp searchMovementToSqLoopStart
 label searchMovementToSqLoopEnd
