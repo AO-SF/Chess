@@ -47,7 +47,17 @@ cmp r4 r4 r4
 skipeqz r4
 jmp searchMovementToSqLoopEnd
 ; If piece on toSq is friendly then cannot capture or move beyond, so break out of loop
-; TODO: this
+push8 r0
+mov r0 r3
+call posGetPieceOnSq ; special function which does not use regs
+mov r4 r0 ; to-piece is in r4 (for now only)
+pop8 r0
+mov r5 posStm
+load8 r5 r5
+and r4 r4 r5
+cmp r4 r4 r4
+skipeqz r4
+jmp searchMovementToSqLoopEnd
 ; Create move (move in r4)
 mov r4 r0
 mov r5 7
