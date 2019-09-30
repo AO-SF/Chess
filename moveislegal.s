@@ -36,5 +36,23 @@ mov r0 0
 ret
 
 label moveIsPseudoLegal ; (r0=move) - like moveIsLegal, but does not care if making the move leaves (original) side to move in check. Verifies things like is the piece on from square friendly, can it move to the to square, etc.
-mov r0 1 ; TODO: this
+; check piece on to sq is not friendly (so need empty or opponent colour)
+push16 r0
+call moveGetToSq
+call posGetPieceOnSq
+mov r1 posStm
+and r0 r0 r1
+cmp r1 r0 r0
+pop16 r0
+skipeqz r1
+jmp moveIsPseudoLegalFalse
+; Check piece on from sq is friendly
+; TODO: this
+; Check from piece can move in the needed awy
+; TODO: this
+; Move is legal
+mov r0 1
+ret
+label moveIsPseudoLegalFalse
+mov r0 0
 ret
