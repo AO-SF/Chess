@@ -13,9 +13,9 @@ requireend movetostr.s
 requireend pos.s
 requireend search.s
 
-const LineYInput 9
-const LineYHelp 10
-const LineYStatus 11
+const LineYInput 10
+const LineYHelp 11
+const LineYStatus 12
 
 db commandPromptStr 'Enter command: ',0
 db commandHelpStr '(m - player move, c - computer move, r - reset, q - quit)',0

@@ -4,6 +4,7 @@ requireend lib/std/mem/memmove.s
 
 const ColourWhite        32 ; 0010 0000
 const ColourBlack        64 ; 0100 0000
+const ColourBoth         96 ; 0110 0000
 
 const PieceFlagNotSlider  8 ; 0000 1000
 const PieceFlagKing      16 ; 0001 0000
@@ -35,7 +36,12 @@ db pieceChars '.','q','p','n','k','r','b','?'
 
 db posArrayStartPos 37,43,38,33,60,38,43,37,0,0,0,0,0,0,0,0,42,42,42,42,42,42,42,42,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,74,74,74,74,74,74,74,74,0,0,0,0,0,0,0,0,69,75,70,65,92,70,75,69,0,0,0,0,0,0,0,0
 
+db posDrawStmStr 'Side to move: ',0
+db posDrawStmWhiteStr 'white',0
+db posDrawStmBlackStr 'black',0
+
 ab posArray 128
+ab posStm 1
 
 label posReset ; reset board to start position
 ; Simply copy pre-initialised array of start position into board array
@@ -43,9 +49,14 @@ mov r0 posArray
 mov r1 posArrayStartPos
 mov r2 128
 call memmove
+; Set stm=white
+mov r0 posStm
+mov r1 ColourWhite
+store8 r0 r1
 ret
 
 label posDraw ; draw ascii board to stdout
+; Place cursor to start 8th rank
 mov r0 0
 mov r1 0
 call cursesSetPosXY
@@ -83,6 +94,31 @@ jmp posDrawYLoopEnd
 dec r1
 jmp posDrawYLoopStart
 label posDrawYLoopEnd
+; Print stm
+call posDrawStmRaw
+ret
+
+label posDrawStm ; updates stm on screen
+; Move cursor to correct place
+mov r0 0
+mov r1 8
+call cursesSetPosXY
+; Use posDrawStmRaw to do actual updating
+jmp posDrawStmRaw
+
+label posDrawStmRaw ; like posDrawStm but assumes cursor is already in correct position
+; Print prefix string
+mov r0 posDrawStmStr
+call puts0
+; Print colour string
+mov r0 posDrawStmWhiteStr
+mov r1 posStm
+load8 r1 r1
+mov r2 ColourBlack
+cmp r1 r1 r2
+skipneq r1
+mov r0 posDrawStmBlackStr
+call puts0
 ret
 
 label posDrawSquare ; (r0=sq) - moves cursor and draws character

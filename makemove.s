@@ -15,6 +15,8 @@ pop16 r0
 mov r1 127 ; grab to sq
 and r0 r0 r1
 call posDrawSquare ; redraw to sq
+; Update stm string
+call posDrawStm
 ret
 
 label makeMove ; (r0=move) - makes a move on the virtual board
@@ -37,4 +39,10 @@ and r1 r0 r2
 mov r2 posArray
 add r2 r1 r2
 store8 r2 r3
+; flip stm
+mov r0 posStm
+load8 r1 r0
+mov r2 ColourBoth
+xor r1 r1 r2
+store8 r0 r1
 ret
