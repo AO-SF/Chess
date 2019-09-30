@@ -8,6 +8,7 @@ requireend lib/std/proc/exit.s
 requireend makemove.s
 requireend move.s
 requireend movefromstr.s
+requireend moveislegal.s
 requireend movetostr.s
 requireend pos.s
 requireend search.s
