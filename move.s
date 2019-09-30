@@ -17,3 +17,15 @@ mov r3 14
 shl r2 r2 r3
 or r0 r0 r2
 ret
+
+label moveGetFromSq ; (r0=move) - places fromSq in r0. note: only uses r0 and r5 (scratch reg), none others need protecting
+mov r5 7
+shr r0 r0 r5
+mov r5 127
+and r0 r0 r5
+ret
+
+label moveGetToSq ; (r0=move) - places toSq in r0. note: only uses r0 and r5 (scratch reg), none others need protecting
+mov r5 127
+and r0 r0 r5
+ret
