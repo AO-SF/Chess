@@ -140,7 +140,8 @@ label runCommandComputer
 ; Choose move
 call search
 ; Make move (also updating screen)
-call makeMoveWithScreen
+; TODO: uncomment below once above actually returns a move
+; call makeMoveWithScreen
 ret
 
 label runCommandMove
