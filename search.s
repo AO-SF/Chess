@@ -2,6 +2,7 @@ db movementTableStarts 0,10,0,1,10,14,19 ; use lowest 3 bits of piece as index i
 dw movementSteps 0,-33,-31,-18,-14,14,18,31,33,0,-17,-15,15,17,-16,-1,1,16,0,-17,-15,15,17,0 ; list of movement steps/deltas for each piece. only supports knights, bishops, rooks, queens and kings (no castling)
 
 label search ; returns move in r0
+; TODO: Generate other moves: pawns (all types), castling
 ; Loop over all from-squares
 mov r0 0 ; fromSq=A1
 label searchFromSqLoopStart
