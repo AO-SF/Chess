@@ -164,3 +164,10 @@ xor r0 r3 r5
 ; Print character
 call putc0
 ret
+
+label posGetXStm ; returns side NOT to move in r0
+mov r0 posStm
+load8 r0 r0
+mov r1 ColourBoth
+xor r0 r0 r1
+ret
