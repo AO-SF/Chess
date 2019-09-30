@@ -3,6 +3,14 @@ dw movementSteps 0,-33,-31,-18,-14,14,18,31,33,0,-17,-15,15,17,-16,-1,1,16,0,-17
 
 label search ; returns move in r0
 ; TODO: Generate other moves: pawns (all types), castling
+; Move cursor to status line in case we need to output anything
+mov r0 0
+mov r1 LineYStatus
+call cursesSetPosXY
+; ..... temp - print prefix string - see below regarding a flag for this
+db searchTempPrefixStr 'Moves: ',0
+mov r0 searchTempPrefixStr
+call puts0
 ; Loop over all from-squares
 mov r0 0 ; fromSq=A1
 label searchFromSqLoopStart
@@ -80,6 +88,25 @@ pop8 r0
 push8 r5 ; save capPiece on stack for now (used by undoMove and other logic)
 ; Is king left attacked (i.e. in check)?
 ; TODO: this - if so, skip 'recursive search' part and skip straight to 'undo move'
+; ..... temp: print move - would be nice to make this accessible via flag for a 'list moves' style command
+push8 r0
+push8 r1
+push16 r2
+push8 r3
+push16 r4
+ab searchTempMoveStr moveToStrMinSize
+mov r0 r4
+mov r1 searchTempMoveStr
+call moveToStr
+mov r0 searchTempMoveStr
+call puts0
+mov r0 ' '
+call putc0
+pop16 r4
+pop8 r3
+pop16 r2
+pop8 r1
+pop8 r0
 ; Recursive search
 ; TODO: this
 ; Undo move
