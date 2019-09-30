@@ -5,6 +5,7 @@ requireend lib/std/io/fget.s
 requireend lib/std/io/fput.s
 requireend lib/std/proc/exit.s
 
+requireend makemove.s
 requireend move.s
 requireend movefromstr.s
 requireend movetostr.s
