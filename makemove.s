@@ -5,16 +5,12 @@ push16 r0
 call makeMove
 pop16 r0
 ; Update board on screen by redrawing from and to squares
-push16 r0 ; grab from sq
-mov r1 7
-shr r0 r0 r1
-mov r1 127
-and r0 r0 r1
-call posDrawSquare ; redraw from sq
+push16 r0 ; redraw from sq
+call moveGetFromSq
+call posDrawSquare
 pop16 r0
-mov r1 127 ; grab to sq
-and r0 r0 r1
-call posDrawSquare ; redraw to sq
+call moveGetToSq ; redraw to sq
+call posDrawSquare
 ; Update stm string
 call posDrawStm
 ret
