@@ -61,3 +61,15 @@ load8 r0 r0
 mov r1 ColourBoth
 xor r0 r0 r1
 ret
+
+label posGetPieceOnXY ; (r0=x, r1=y) - returns piece in r0
+mov r2 4
+shl r1 r1 r2
+or r0 r0 r1
+jmp posGetPieceOnSq ; this function will return for us
+
+label posGetPieceOnSq ; (r0=square) - returns piece in r0. note: only uses r0 and r5 (scratch reg) so caller does not need to protect any others
+mov r5 posArray
+add r0 r0 r5
+load8 r0 r0
+ret
