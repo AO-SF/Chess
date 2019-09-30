@@ -58,7 +58,7 @@ label posDrawXLoopStart
 ; Print piece on this square
 push8 r0
 push8 r1
-call posDrawSquareRaw
+call posDrawSquareByXYRaw
 pop8 r1
 pop8 r0
 ; Printed all squares in this row?
@@ -85,7 +85,29 @@ jmp posDrawYLoopStart
 label posDrawYLoopEnd
 ret
 
-label posDrawSquareRaw ; (r0=x, r1=y) - assumes cursor is in correct position already
+label posDrawSquare ; (r0=sq) - moves cursor and draws character
+; Extract y
+mov r1 4
+shr r1 r0 r1
+; Mask x
+mov r2 7
+and r0 r0 r2
+; Jump to xy version to do most of the work
+jmp posDrawSquareByXY
+
+label posDrawSquareByXY ; (r0=x, r1=y) - moves cursor and draws character
+; Move cursor
+push8 r0
+push8 r1
+mov r2 7
+sub r1 r2 r1
+call cursesSetPosXY
+pop8 r1
+pop8 r0
+; Jump to raw function to do actual drawing
+jmp posDrawSquareByXYRaw
+
+label posDrawSquareByXYRaw ; (r0=x, r1=y) - assumes cursor is in correct position already
 ; Load piece on this square
 mov r2 16
 mul r2 r2 r1 ; y*16
