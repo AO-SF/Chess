@@ -98,22 +98,17 @@ jmp posDrawSquareByXYRaw
 
 label posDrawSquareByXYRaw ; (r0=x, r1=y) - assumes cursor is in correct position already
 ; Load piece on this square
-mov r2 16
-mul r2 r2 r1 ; y*16
-add r2 r2 r0 ; +x
-mov r5 posArray
-add r2 r2 r5
-load8 r2 r2
+call posGetPieceOnXY
 ; Use lowest 3 bits of piece as unique index into array of characters
-mov r5 7
-and r5 r2 r5
-mov r4 pieceChars
-add r5 r5 r4
-load8 r3 r5
+mov r1 7
+and r1 r0 r1
+mov r2 pieceChars
+add r1 r1 r2
+load8 r1 r1
 ; Make character capital if a white piece
-mov r5 ColourWhite
-and r5 r2 r5
-xor r0 r3 r5
+mov r2 ColourWhite
+and r2 r0 r2
+xor r0 r1 r2
 ; Print character
 call putc0
 ret
