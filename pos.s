@@ -165,6 +165,15 @@ xor r0 r3 r5
 call putc0
 ret
 
+label posGetKingSq ; (r0=colour) - places king sq into r0
+; TODO: this - loop over board looking for king piece of correct colour
+mov r0 0
+ret
+
+label posGetKingSqXStm ; =posGetKingSq(xstm)
+call posGetXStm
+jmp posGetKingSq ; this function will return for us
+
 label posGetXStm ; returns side NOT to move in r0
 mov r0 posStm
 load8 r0 r0
