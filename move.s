@@ -1,7 +1,5 @@
 ; Moves are composed of 16 bits of the form promotype:fromsq:tosq, (with 2,7,7 bits, respectively), from MSB to LSB.
 
-requireend pos.s
-
 const MoveInvalid 0
 
 label moveIsLegal ; (r0=move) - returns 1/0 in r0 for legal/illegal

@@ -1,4 +1,3 @@
-
 label moveFromStr ; (r0=str) - returns move in r0, or MoveInvalid if bad str. str can be terminated by null byte or newline
 ; TODO: handle promption character
 ; Create 'empty' move for us to incrementally fill
