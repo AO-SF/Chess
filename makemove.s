@@ -19,7 +19,7 @@ call posDrawSquare ; redraw to sq
 call posDrawStm
 ret
 
-label makeMove ; (r0=move) - makes a move on the virtual board
+label makeMove ; (r0=move) - makes a move on the virtual board, returns cappiece in r0 (used for undoMove)
 ; TODO: need to support many special cases e.g. castling, ep, promotion
 ; grab from sq
 mov r2 7
@@ -35,9 +35,11 @@ store8 r2 r4
 ; grab to sq
 mov r2 127
 and r1 r0 r2
-; place piece on to sq (piece is in r3)
 mov r2 posArray
 add r2 r1 r2
+; grab piece on to sq - capPiece - used for undoMove (to sq ptr is in r2)
+load8 r4 r2
+; place piece on to sq (to sq ptr is in r2, piece is in r3)
 store8 r2 r3
 ; flip stm
 mov r0 posStm
@@ -45,4 +47,6 @@ load8 r1 r0
 mov r2 ColourBoth
 xor r1 r1 r2
 store8 r0 r1
+; Move capPiece into r0 to return it
+mov r0 r4
 ret
