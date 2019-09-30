@@ -47,9 +47,28 @@ store8 r0 r1
 ret
 
 label posGetKingSq ; (r0=colour) - places king sq into r0
-; TODO: this - loop over board looking for king piece of correct colour
+; Create piece to test against
+mov r1 PieceTypeKing
+or r1 r0 r1
+; Loop over squares (test piece in r1)
 mov r0 0
-ret
+label posGetKingSqLoopStart
+; Grab piece on square and test for match
+push8 r0
+push8 r1
+call posGetPieceOnSq
+cmp r2 r0 r1
+pop8 r1
+pop8 r0
+skipneq r2
+jmp posGetKingSqFound
+; Advance square and loop around
+inc9 r0
+mov r2 119 ; =~8
+and r0 r0 r2
+jmp posGetKingSqLoopStart
+label posGetKingSqFound
+ret ; r0 already contains square
 
 label posGetKingSqXStm ; =posGetKingSq(xstm)
 call posGetXStm
