@@ -12,6 +12,7 @@ requireend movefromstr.s
 requireend moveislegal.s
 requireend movetostr.s
 requireend pos.s
+requireend posdraw.s
 requireend search.s
 
 const LineYInput 10
