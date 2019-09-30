@@ -46,9 +46,20 @@ cmp r1 r0 r0
 pop16 r0
 skipeqz r1
 jmp moveIsPseudoLegalFalse
+; Grab from piece (placing into r1)
+push16 r0
+call moveGetFromSq
+call posGetPieceOnSq
+mov r1 r0 ; move piece into r1
+pop16 r0
 ; Check piece on from sq is friendly
-; TODO: this
-; Check from piece can move in the needed awy
+mov r2 posStm
+load8 r2 r2
+and r2 r1 r2
+cmp r2 r2 r2
+skipneqz r2
+jmp moveIsLegalFalse
+; Check from piece can move in the needed way (move in r0, from piece in r1)
 ; TODO: this
 ; Move is legal
 mov r0 1
