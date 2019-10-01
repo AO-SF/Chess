@@ -167,7 +167,6 @@ pop8 r5 ; grab capPiece
 cmp r5 r5 r5
 skipeqz r5
 jmp searchMovementToSqLoopEnd
-; TODO: this
 ; If moving piece is not a slider, break out of loop
 mov r5 PieceFlagNotSlider
 and r5 r1 r5
