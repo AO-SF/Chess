@@ -2,8 +2,6 @@
 
 requireend lib/std/io/fput.s
 
-ab movePrintBuffer moveToStrMinSize
-
 label moveCreateSimple ; (r0=fromsq, r1=tosq)=moveCreate(fromsq, tosq, PieceTypeNone)
 mov r2 PieceTypeNone
 jmp moveCreate
@@ -33,8 +31,16 @@ and r0 r0 r5
 ret
 
 label movePrint ; (r0=move)
-mov r1 movePrintBuffer
+; Note: this function assumes moveToStrMinSize<=6
+; Reserve space on stack to store string
+mov r1 r6
+inc6 r6
+; Convert move to string
 call moveToStr
-mov r0 movePrintBuffer
+; Print string
+mov r0 r6
+dec6 r0 ; note we cannot just decrement the stack immediately in case a signal handler is invoked while we are in puts0
 call puts0
+; Restore stack
+dec6 r6
 ret
