@@ -1,5 +1,6 @@
-db movementTableStarts 0,10,0,1,10,14,19 ; use lowest 3 bits of piece as index into this array, provides index to start from in movementSteps array
-dw movementSteps 0,-33,-31,-18,-14,14,18,31,33,0,-17,-15,15,17,-16,-1,1,16,0,-17,-15,15,17,0 ; list of movement steps/deltas for each piece. only supports knights, bishops, rooks, queens and kings (no castling)
+db movementTableStarts 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,0,0,0,14,19,0,0,0,24,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,0,0,0,0,10,0,0,0,14,19,0,0,0,28,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ; use piece as index into this array to lookup index to start at in movementSteps array
+
+dw movementSteps 0,-33,-31,-18,-14,14,18,31,33,0,-17,-15,15,17,-16,-1,1,16,0,-17,-15,15,17,0,16,15,17,0,-16,-17,-15,0 ; list of movement steps/deltas for each piece. indexes: knight 1, queen/king 10, rook 14, bishop 19, white pawn 24, black pawn 28
 
 const SearchModeSearch 0 ; search for best move, returning move in r0
 const SearchModeListMoves 1 ; print list of legal moves for current position
@@ -35,10 +36,8 @@ cmp r2 r2 r2
 skipneqz r2
 jmp searchFromSqLoopContinue
 ; Lookup start index into movementSteps array (placing current step ptr into r2)
-mov r2 7
-and r2 r1 r2
-mov r3 movementTableStarts
-add r2 r2 r3
+mov r2 movementTableStarts
+add r2 r2 r1
 load8 r2 r2
 add r2 r2 r2 ; double offset due to 16 bit array entries
 mov r3 movementSteps
