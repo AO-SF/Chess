@@ -65,14 +65,37 @@ jmp searchMovementToSqLoopEnd
 push8 r0
 mov r0 r3
 call posGetPieceOnSq ; special function which does not use regs
-mov r4 r0 ; to-piece is in r4 (for now only)
+mov r4 r0 ; to-piece is in r4 (for now and next section only)
 pop8 r0
 mov r5 posStm
 load8 r5 r5
-and r4 r4 r5
+and r5 r4 r5
+cmp r5 r5 r5
+skipeqz r5
+jmp searchMovementToSqLoopEnd
+; Special logic for pawns: straight moves cannot be captures, while diagonal moves must be captures
+push8 r4 ; protect toPiece
+mov r5 PieceTypeMask
+and r4 r1 r5
+mov r5 PieceTypePawn
+cmp r5 r4 r5
+pop8 r4 ; restore toPiece
+skipeq r5
+jmp searchPawnMoveTestEnd ; skip test if from piece not pawn
 cmp r4 r4 r4
+mov r5 1
+skipneqz r4
+mov r5 0 ; r5 now contains 1 if capture, 0 if not
+push8 r5
+load16 r4 r2 ; load current step value
+mov r5 1
+and r4 r4 r5 ; r4 now contains 1 if diagonal move, 0 if straight
+pop8 r5
+xor r4 r4 r5
+cmp r4 r4 r4 ; 0 is legal, 1 is illegal
 skipeqz r4
 jmp searchMovementToSqLoopEnd
+label searchPawnMoveTestEnd
 ; Create move (move in r4)
 mov r4 r0
 mov r5 7
