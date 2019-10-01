@@ -1,7 +1,5 @@
 requireend lib/std/str/strcpy.s
 
-const moveToStrMinSize 6
-
 db moveToStrInvalidStr '????',0
 
 label moveToStr ; (r0=move, r1=buf) writes null terminated move to buffer (which should have space for at least moveToStrMinSize bytes)

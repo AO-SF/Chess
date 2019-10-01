@@ -1,6 +1,5 @@
 ; Moves are composed of 16 bits of the form promotype:fromsq:tosq, (with 2,7,7 bits, respectively), from MSB to LSB.
 
-const MoveInvalid 0
 
 label moveCreateSimple ; (r0=fromsq, r1=tosq)=moveCreate(fromsq, tosq, PieceTypeNone)
 mov r2 PieceTypeNone

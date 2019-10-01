@@ -5,6 +5,8 @@ requireend lib/std/io/fget.s
 requireend lib/std/io/fput.s
 requireend lib/std/proc/exit.s
 
+require defs.s
+
 requireend attacks.s
 requireend makemove.s
 requireend move.s
@@ -15,10 +17,6 @@ requireend pos.s
 requireend posdraw.s
 requireend search.s
 requireend square.s
-
-const LineYInput 10
-const LineYHelp 11
-const LineYStatus 12
 
 db commandPromptStr 'Enter command: ',0
 db commandHelpStr '(m - player move, c - computer move, l - list moves, r - reset, q - quit)',0
