@@ -1,16 +1,24 @@
 db movementTableStarts 0,10,0,1,10,14,19 ; use lowest 3 bits of piece as index into this array, provides index to start from in movementSteps array
 dw movementSteps 0,-33,-31,-18,-14,14,18,31,33,0,-17,-15,15,17,-16,-1,1,16,0,-17,-15,15,17,0 ; list of movement steps/deltas for each piece. only supports knights, bishops, rooks, queens and kings (no castling)
 
+const SearchModeSearch 0 ; search for best move, returning move in r0
+const SearchModeListMoves 1 ; print list of legal moves for current position
+ab searchMode 1
+
+label searchList ; print all legal moves
+mov r0 searchMode
+mov r1 SearchModeListMoves
+store8 r0 r1
+jmp searchCommon
+
 label search ; returns move in r0
+mov r0 searchMode
+mov r1 SearchModeSearch
+store8 r0 r1
+jmp searchCommon
+
+label searchCommon ; search (returning move in r0) or print legal moves
 ; TODO: Generate other moves: pawns (all types), castling
-; Move cursor to status line in case we need to output anything
-mov r0 0
-mov r1 LineYStatus
-call cursesSetPosXY
-; ..... temp - print prefix string - see below regarding a flag for this
-db searchTempPrefixStr 'Moves: ',0
-mov r0 searchTempPrefixStr
-call puts0
 ; Loop over all from-squares
 mov r0 0 ; fromSq=A1
 label searchFromSqLoopStart
@@ -87,8 +95,16 @@ pop8 r1
 pop8 r0
 push8 r5 ; save capPiece on stack for now (used by undoMove and other logic)
 ; Is king left attacked (i.e. in check)?
-; TODO: this - if so, skip 'recursive search' part and skip straight to 'undo move'
-; ..... temp: print move - would be nice to make this accessible via flag for a 'list moves' style command
+; TODO: this - if so, skip 'print'/'recursive search' part and skip straight to 'undo move'
+; Switch based on mode
+mov r5 searchMode
+load8 r5 r5
+cmp r5 r5 r5
+skipneqz r5
+jmp searchSwitchModeSearch
+jmp searchSwitchModeListMoves
+; Print move (mode = list moves)
+label searchSwitchModeListMoves
 push8 r0
 push8 r1
 push16 r2
@@ -107,8 +123,13 @@ pop8 r3
 pop16 r2
 pop8 r1
 pop8 r0
-; Recursive search
+jmp searchSwitchEnd
+; Recursive search (mode = search)
+label searchSwitchModeSearch
 ; TODO: this
+jmp searchSwitchEnd
+; End of mode switch statment
+label searchSwitchEnd
 ; Undo move
 pop8 r5 ; grab capPiece
 push8 r5 ; also save capPiece again for later

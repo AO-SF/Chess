@@ -21,8 +21,10 @@ const LineYHelp 11
 const LineYStatus 12
 
 db commandPromptStr 'Enter command: ',0
-db commandHelpStr '(m - player move, c - computer move, r - reset, q - quit)',0
+db commandHelpStr '(m - player move, c - computer move, l - list moves, r - reset, q - quit)',0
 db commandInvalidStr 'Invalid command: ',0
+
+db listMovesPrefixStr 'Moves: ',0
 
 db humanMovePromptStr 'Enter move: ',0
 db humanMoveInvalidStr 'Invalid move',0
@@ -116,6 +118,10 @@ mov r1 'm'
 cmp r1 r0 r1
 skipneq r1
 jmp runCommandMove
+mov r1 'l'
+cmp r1 r0 r1
+skipneq r1
+jmp runCommandList
 mov r1 'q'
 cmp r1 r0 r1
 skipneq r1
@@ -154,6 +160,18 @@ call cursesSetPosXY
 call cursesClearLine
 mov r0 commandPromptStr
 call puts0
+ret
+
+label runCommandList
+; Move cursor to status line
+mov r0 0
+mov r1 LineYStatus
+call cursesSetPosXY
+; Print prefix string
+mov r0 listMovesPrefixStr
+call puts0
+; Print moves
+call searchList
 ret
 
 label runCommandReset
