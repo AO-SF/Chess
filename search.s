@@ -19,7 +19,7 @@ store8 r0 r1
 jmp searchCommon
 
 label searchCommon ; search (returning move in r0) or print legal moves
-; TODO: Generate other moves: pawns (all types), castling
+; TODO: Generate other moves: pawns (promotions and en-passent captures), castling
 ; Loop over all from-squares
 mov r0 0 ; fromSq=A1
 label searchFromSqLoopStart
@@ -168,6 +168,7 @@ cmp r5 r5 r5
 skipeqz r5
 jmp searchMovementToSqLoopEnd
 ; If moving piece is not a slider, break out of loop
+; TODO: make exception for pawns if: step==+-16 and (pawn has not moved) and tosq==fromsq+step
 mov r5 PieceFlagNotSlider
 and r5 r1 r5
 cmp r5 r5 r5
