@@ -18,6 +18,7 @@ const PieceTypeBishop     6 ; 0000 0110
 const PieceTypeRook       5 ; 0000 0101
 const PieceTypeQueen      1 ; 0000 0001
 const PieceTypeKing      28 ; 0001 1100
+const PieceTypeMask      31 ; 0001 1111
 
 const PN                  0 ; 0000 0000
 const PWP                42 ; 0010 1010
