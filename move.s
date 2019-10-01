@@ -1,5 +1,8 @@
 ; Moves are composed of 16 bits of the form promotype:fromsq:tosq, (with 2,7,7 bits, respectively), from MSB to LSB.
 
+requireend lib/std/io/fput.s
+
+ab movePrintBuffer moveToStrMinSize
 
 label moveCreateSimple ; (r0=fromsq, r1=tosq)=moveCreate(fromsq, tosq, PieceTypeNone)
 mov r2 PieceTypeNone
@@ -27,4 +30,11 @@ ret
 label moveGetToSq ; (r0=move) - places toSq in r0. note: only uses r0 and r5 (scratch reg), none others need protecting
 mov r5 127
 and r0 r0 r5
+ret
+
+label movePrint ; (r0=move)
+mov r1 movePrintBuffer
+call moveToStr
+mov r0 movePrintBuffer
+call puts0
 ret

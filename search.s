@@ -110,12 +110,8 @@ push8 r1
 push16 r2
 push8 r3
 push16 r4
-ab searchTempMoveStr moveToStrMinSize
 mov r0 r4
-mov r1 searchTempMoveStr
-call moveToStr
-mov r0 searchTempMoveStr
-call puts0
+call movePrint
 mov r0 ' '
 call putc0
 pop16 r4
