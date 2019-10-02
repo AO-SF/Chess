@@ -17,6 +17,11 @@ ret
 
 label makeMove ; (r0=move) - makes a move on the virtual board, returns (frompiece<<8)|cappiece in r0 (used for undoMove)
 ; TODO: need to support many special cases e.g. castling, ep, promotion
+; decrement depth for search
+mov r1 searchDepth
+load8 r2 r1
+dec r2
+store8 r1 r2
 ; grab from sq
 mov r2 7
 shr r1 r0 r2
@@ -85,5 +90,10 @@ add r1 r1 r3
 ; place fromPiece back on from sq (fromPiece from makeMove return in r2, from sq ptr in r1)
 mov r3 8
 shr r2 r2 r3
+store8 r1 r2
+; increment depth for search
+mov r1 searchDepth
+load8 r2 r1
+inc r2
 store8 r1 r2
 ret

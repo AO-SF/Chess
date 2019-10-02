@@ -3,7 +3,9 @@ require lib/sys/sys.s
 requireend lib/curses/curses.s
 requireend lib/std/io/fget.s
 requireend lib/std/io/fput.s
+requireend lib/std/io/fputdec.s
 requireend lib/std/proc/exit.s
+requireend lib/std/str/strtoint.s
 
 require defs.s
 
@@ -19,7 +21,7 @@ requireend search.s
 requireend square.s
 
 db commandPromptStr 'Enter command: ',0
-db commandHelpStr '(m - player move, c - computer move, l - list moves, r - reset, q - quit)',0
+db commandHelpStr '(m - player move, c - computer move, l - list moves, p - perft, r - reset, q - quit)',0
 db commandInvalidStr 'Invalid command: ',0
 
 db listMovesPrefixStr 'Moves: ',0
@@ -28,8 +30,12 @@ db humanMovePromptStr 'Enter move: ',0
 db humanMoveInvalidStr 'Invalid move',0
 db humanMoveIllegalStr 'Illegal move',0
 
-const humanMoveInputStrSize 8
-ab humanMoveInputStr humanMoveInputStrSize
+db perftPromptStr 'Depth limit: ',0
+db perftBadDepthStr 'Bad depth',0
+db perftStatusStr 'Perft:\n',0
+
+const scratchBufSize 8
+ab scratchBuf scratchBufSize
 
 ; Signal handlers (must be in first 256 bytes)
 jmp start
@@ -120,6 +126,10 @@ mov r1 'l'
 cmp r1 r0 r1
 skipneq r1
 jmp runCommandList
+mov r1 'p'
+cmp r1 r0 r1
+skipneq r1
+jmp runCommandPerft
 mov r1 'q'
 cmp r1 r0 r1
 skipneq r1
@@ -172,6 +182,78 @@ call puts0
 call searchList
 ret
 
+label runCommandPerft
+; grab max depth
+call perftGetDepth
+mov r1 0
+cmp r1 r0 r1
+skipgt r1
+jmp runCommandPerftBadDepth
+; Move cursor ready to output
+push8 r0
+mov r0 0
+mov r1 LineYStatus
+call cursesSetPosXY
+; Print perft string
+mov r0 perftStatusStr
+call puts0
+pop8 r0
+; Loop from depth=1 to max
+mov r1 r0 ; max
+mov r0 1 ; current
+label runCommandPerftLoopStart
+; Print depth and space
+push8 r1
+push8 r0
+call putdec
+mov r0 ' '
+call putc0
+pop8 r0
+; Call perft function
+push8 r0 ; grab depth
+call searchPerft
+; Print result and newline
+call putdec
+mov r0 '\n'
+call putc0
+; Next iteration?
+pop8 r0 ; grab depth
+pop8 r1 ; grab max depth
+inc r0
+cmp r2 r0 r1
+skipgt r2
+jmp runCommandPerftLoopStart
+ret
+; Error case
+label runCommandPerftBadDepth
+mov r0 0
+mov r1 LineYStatus
+call cursesSetPosXY
+mov r0 perftBadDepthStr
+call puts0
+ret
+
+label perftGetDepth ; returns depth in r0, 0 on failure
+; Print prompt
+mov r0 0
+mov r1 LineYInput
+call cursesSetPosXY
+call cursesClearLine
+mov r0 perftPromptStr
+call puts0
+; Grab move string
+mov r0 1
+call cursesSetEcho
+mov r0 scratchBuf
+mov r1 scratchBufSize
+call gets0
+mov r0 0
+call cursesSetEcho
+; Convert string to integer and return
+mov r0 scratchBuf
+call strtoint
+ret
+
 label runCommandReset
 call resetGame ; reset game state and redraw screen
 ret ; return from runCommand
@@ -221,12 +303,12 @@ call puts0
 ; Grab move string
 mov r0 1
 call cursesSetEcho
-mov r0 humanMoveInputStr
-mov r1 humanMoveInputStrSize
+mov r0 scratchBuf
+mov r1 scratchBufSize
 call gets0
 mov r0 0
 call cursesSetEcho
 ; Convert string to move and return
-mov r0 humanMoveInputStr
+mov r0 scratchBuf
 call moveFromStr
 ret

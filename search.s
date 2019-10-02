@@ -6,6 +6,9 @@ const SearchModeSearch 0 ; search for best move, returning move in r0
 const SearchModeListMoves 1 ; print list of legal moves for current position
 ab searchMode 1
 
+ab searchDepth 1
+aw searchLeafCount 1 ; count of all depth=0 nodes
+
 label searchList ; print all legal moves
 mov r0 searchMode
 mov r1 SearchModeListMoves
@@ -18,7 +21,42 @@ mov r1 SearchModeSearch
 store8 r0 r1
 jmp searchCommon
 
+label searchPerft ; (r0=depth) - returns count in r0
+; Set search depth
+mov r1 searchDepth
+store8 r1 r0
+; Reset global counter
+mov r0 searchLeafCount
+mov r1 0
+store16 r0 r1
+; Set search mode (reusing search mode)
+mov r0 searchMode
+mov r1 SearchModeSearch
+store8 r0 r1
+; Call searchCommon
+call searchCommon
+; Return global counter
+mov r0 searchLeafCount
+load16 r0 r0
+ret
+
 label searchCommon ; search (returning move in r0) or print legal moves
+; Leaf node?
+mov r0 searchDepth
+load8 r0 r0
+debug
+cmp r0 r0 r0
+skipeqz r0
+jmp searchNotLeafNode
+; Increment leaf counter
+mov r1 searchLeafCount
+load16 r2 r1
+inc r2
+store16 r1 r2
+; End of leaf node code
+mov r0 MoveInvalid
+ret
+label searchNotLeafNode
 ; TODO: Generate other moves: pawns (promotions and en-passent captures), castling
 ; Loop over all from-squares
 mov r0 0 ; fromSq=A1
@@ -160,7 +198,17 @@ pop8 r0
 jmp searchSwitchEnd
 ; Recursive search (mode = search)
 label searchSwitchModeSearch
-; TODO: this
+push8 r0
+push8 r1
+push16 r2
+push8 r3
+push16 r4
+call searchCommon ; TODO: better (alpha-beta)
+pop16 r4
+pop8 r3
+pop16 r2
+pop8 r1
+pop8 r0
 jmp searchSwitchEnd
 ; End of mode switch statment
 label searchSwitchEnd
