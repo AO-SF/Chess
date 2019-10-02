@@ -169,8 +169,31 @@ and r4 r4 r5
 cmp r4 r4 r4
 skipeqz r4
 jmp searchMovementToSqLoopEnd
+; Special case of step below to support double first move for pawns
+mov r4 PieceTypeMask
+mov r5 PieceTypePawn
+and r4 r1 r4
+cmp r4 r4 r5
+skipeq r4
+jmp searchDoublePawnTestEnd ; not a pawn moving
+mov r4 PieceFlagVirgin
+and r4 r1 r4
+cmp r4 r4 r4
+skipneqz r4
+jmp searchMovementToSqLoopEnd ; pawn had already moved before we moved it during above makemove/undomove pair
+load16 r5 r2 ; load current step value
+mov r4 1
+and r4 r4 r5
+cmp r4 r4 r4
+skipeqz r4
+jmp searchMovementToSqLoopEnd ; diagonal move
+add r5 r0 r5
+cmp r5 r3 r5
+skipeq r5
+jmp searchMovementToSqLoopEnd ; not first iteration of toSq loop?
+jmp searchMovementToSqLoopStart ; pawn can do 2nd move
+label searchDoublePawnTestEnd
 ; If moving piece is not a slider, break out of loop
-; TODO: make exception for pawns if: step==+-16 and (pawn has not moved) and tosq==fromsq+step
 mov r5 PieceFlagNotSlider
 and r5 r1 r5
 cmp r5 r5 r5
