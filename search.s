@@ -117,7 +117,23 @@ pop8 r1
 pop8 r0
 push16 r5 ; save makeMove return value on stack for now (used by undoMove and other logic)
 ; Is king left attacked (i.e. in check)?
-; TODO: this - if so, skip 'print'/'recursive search' part and skip straight to 'undo move'
+; TODO: if move was castling, extra squares need testing
+push8 r0
+push8 r1
+push16 r2
+push8 r3
+push16 r4
+call posGetKingSqXStm
+call isSqAttackedByStm
+mov r5 r0
+pop16 r4
+pop8 r3
+pop16 r2
+pop8 r1
+pop8 r0
+cmp r5 r5 r5
+skipeqz r5
+jmp searchSwitchEnd ; jump straight to undoMove
 ; Switch based on mode
 mov r5 searchMode
 load8 r5 r5
