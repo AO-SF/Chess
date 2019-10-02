@@ -32,7 +32,7 @@ db humanMovePromptStr 'Enter move: ',0
 db humanMoveInvalidStr 'Invalid move',0
 db humanMoveIllegalStr 'Illegal move',0
 
-db perftPromptStr 'Depth limit: ',0
+db perftPromptStr 'Enter depth limit: ',0
 db perftBadDepthStr 'Bad depth',0
 db perftStatusStr 'Perft:\n',0
 
