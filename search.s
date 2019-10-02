@@ -44,7 +44,6 @@ label searchCommon ; search (returning move in r0) or print legal moves
 ; Leaf node?
 mov r0 searchDepth
 load8 r0 r0
-debug
 cmp r0 r0 r0
 skipeqz r0
 jmp searchNotLeafNode
