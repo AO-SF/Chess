@@ -4,8 +4,10 @@ requireend lib/curses/curses.s
 requireend lib/std/io/fget.s
 requireend lib/std/io/fput.s
 requireend lib/std/io/fputdec.s
+requireend lib/std/io/fputtime.s
 requireend lib/std/proc/exit.s
 requireend lib/std/str/strtoint.s
+requireend lib/std/time/timemonotonic.s
 
 require defs.s
 
@@ -36,6 +38,8 @@ db perftStatusStr 'Perft:\n',0
 
 const scratchBufSize 8
 ab scratchBuf scratchBufSize
+
+aw perftStartTime 1
 
 ; Signal handlers (must be in first 256 bytes)
 jmp start
@@ -208,12 +212,23 @@ push8 r0
 call putdec
 mov r0 ' '
 call putc0
-pop8 r0
+; Grab start time for timing
+call gettimemonotonic
+mov r1 perftStartTime
+store16 r1 r0
 ; Call perft function
-push8 r0 ; grab depth
+pop8 r0 ; grab and save depth
+push8 r0
 call searchPerft
-; Print result and newline
+; Print result, time and newline
 call putdec
+mov r0 ' '
+call putc0
+call gettimemonotonic
+mov r1 perftStartTime
+load16 r1 r1
+sub r0 r0 r1
+call puttime
 mov r0 '\n'
 call putc0
 ; Next iteration?
