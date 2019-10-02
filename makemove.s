@@ -35,15 +35,18 @@ mov r2 posArray
 add r2 r1 r2
 ; grab piece on to sq - capPiece - used for undoMove (to sq ptr is in r2)
 load8 r4 r2
-; place piece on to sq (to sq ptr is in r2, piece is in r3)
-store8 r2 r3
+; place piece on to sq, clearing virgin bit if set (to sq ptr is in r2, piece is in r3)
+; we preserve original fromPiece in r3 (which potentially has the virgin bit still set)
+mov r5 PieceFlagVirginNeg
+and r5 r3 r5
+store8 r2 r5
 ; flip stm
 mov r0 posStm
 load8 r1 r0
 mov r2 ColourBoth
 xor r1 r1 r2
 store8 r0 r1
-; Move fromPiece (in r3) and capPiece (in r4) into r0 to return them
+; Move (original) fromPiece (in r3) and capPiece (in r4) into r0 to return them
 mov r0 r3
 mov r5 8
 shl r0 r0 r5

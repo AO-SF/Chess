@@ -1,6 +1,6 @@
 requireend lib/std/mem/memmove.s
 
-db posArrayStartPos 37,43,38,33,60,38,43,37,0,0,0,0,0,0,0,0,42,42,42,42,42,42,42,42,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,74,74,74,74,74,74,74,74,0,0,0,0,0,0,0,0,69,75,70,65,92,70,75,69,0,0,0,0,0,0,0,0
+db posArrayStartPos 165,171,166,161,188,166,171,165,0,0,0,0,0,0,0,0,170,170,170,170,170,170,170,170,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,202,202,202,202,202,202,202,202,0,0,0,0,0,0,0,0,197,203,198,193,220,198,203,197,0,0,0,0,0,0,0,0
 
 ab posArray 128
 ab posStm 1
@@ -18,17 +18,18 @@ store8 r0 r1
 ret
 
 label posGetKingSq ; (r0=colour) - places king sq into r0
-; Create piece to test against
-mov r1 PieceTypeKing
+; Create piece mask to test against (colour+kingflag)
+mov r1 PieceFlagKing
 or r1 r0 r1
-; Loop over squares (test piece in r1)
+; Loop over squares (test 'piece' in r1)
 mov r0 0
 label posGetKingSqLoopStart
 ; Grab piece on square and test for match
 push8 r0
 push8 r1
 call posGetPieceOnSq
-cmp r2 r0 r1
+and r2 r0 r1
+cmp r2 r2 r1
 pop8 r1
 pop8 r0
 skipneq r2
