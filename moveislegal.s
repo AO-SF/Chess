@@ -12,7 +12,7 @@ push16 r0
 call makeMove
 mov r1 r0
 pop16 r0
-push8 r1 ; protect makeMove capPiece
+push16 r1 ; protect makeMove return value
 ; Test if our king is attacked
 ; TODO: if move was castling, extra squares need testing
 push16 r0
@@ -21,7 +21,7 @@ call isSqAttackedByStm
 mov r1 r0
 pop16 r0
 ; Undo move
-pop8 r2 ; grab capPiece
+pop16 r2 ; grab makeMove return value to pass indo undoMove
 push8 r1
 mov r1 r2
 call undoMove

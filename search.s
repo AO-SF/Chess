@@ -115,7 +115,7 @@ pop8 r3
 pop16 r2
 pop8 r1
 pop8 r0
-push8 r5 ; save capPiece on stack for now (used by undoMove and other logic)
+push16 r5 ; save makeMove return value on stack for now (used by undoMove and other logic)
 ; Is king left attacked (i.e. in check)?
 ; TODO: this - if so, skip 'print'/'recursive search' part and skip straight to 'undo move'
 ; Switch based on mode
@@ -149,8 +149,8 @@ jmp searchSwitchEnd
 ; End of mode switch statment
 label searchSwitchEnd
 ; Undo move
-pop8 r5 ; grab capPiece
-push8 r5 ; also save capPiece again for later
+pop16 r5 ; grab makeMove return value
+push16 r5 ; also save it again for later
 push8 r0
 push8 r1
 push16 r2
@@ -163,9 +163,11 @@ pop16 r2
 pop8 r1
 pop8 r0
 ; If move captured a piece then end of ray so break out of loop
-pop8 r5 ; grab capPiece
-cmp r5 r5 r5
-skipeqz r5
+pop16 r4 ; grab makeMove return value and extract capPiece
+mov r5 255
+and r4 r4 r5
+cmp r4 r4 r4
+skipeqz r4
 jmp searchMovementToSqLoopEnd
 ; If moving piece is not a slider, break out of loop
 ; TODO: make exception for pawns if: step==+-16 and (pawn has not moved) and tosq==fromsq+step
