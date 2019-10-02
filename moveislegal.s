@@ -41,6 +41,7 @@ push16 r0
 call moveGetToSq
 call posGetPieceOnSq
 mov r1 posStm
+load8 r1 r1
 and r0 r0 r1
 cmp r1 r0 r0
 pop16 r0
