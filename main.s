@@ -36,6 +36,9 @@ db perftPromptStr 'Enter depth limit: ',0
 db perftBadDepthStr 'Bad depth',0
 db perftStatusStr 'Perft:\n',0
 
+db computerStatusStr 'Computer move: ',0
+db computerErrorStr 'Could not find move.',0
+
 const scratchBufSize 8
 ab scratchBuf scratchBufSize
 
@@ -154,9 +157,31 @@ jmp runCommandWaitForInput
 label runCommandComputer
 ; Choose move
 call search
+push16 r0
+; Move cursor to status line
+mov r0 0
+mov r1 LineYStatus
+call cursesSetPosXY
+; Print static start of status
+mov r0 computerStatusStr
+call puts0
+; Print move
+pop16 r0
+push16 r0
+call movePrint
+; Invalid move?
+pop16 r0
+mov r1 MoveInvalid
+cmp r1 r0 r1
+skipneq r1
+jmp runCommandComputerInvalidMove
 ; Make move (also updating screen)
-; TODO: uncomment below once above actually returns a move
-; call makeMoveWithScreen
+call makeMoveWithScreen
+ret
+; Error case
+label runCommandComputerInvalidMove
+mov r0 computerErrorStr
+call puts0
 ret
 
 label runCommandMove
