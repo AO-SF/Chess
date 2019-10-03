@@ -9,6 +9,7 @@ ab searchMode 1
 ab searchDepth 1
 ab searchPly 1
 aw searchLeafCount 1 ; count of all depth=0 nodes
+aw searchBestMove 1
 
 label searchList ; print all legal moves
 ; Set search depth to 1
@@ -43,10 +44,15 @@ store8 r1 r0
 mov r0 searchMode
 mov r1 SearchModeSearch
 store8 r0 r1
+; Set bestMove to invalid in case we do not find one
+mov r0 searchBestMove
+mov r1 MoveInvalid
+store16 r0 r1
 ; Call searchCommon to do actual searching
 call searchCommon
 ; Grab best move to return
-mov r0 MoveInvalid ; TODO: this
+mov r0 searchBestMove
+load16 r0 r0
 ret
 
 label searchPerft ; (r0=depth) - returns count in r0
@@ -221,12 +227,27 @@ pop8 r0
 jmp searchSwitchEnd
 ; Recursive search (mode = search)
 label searchSwitchModeSearch
+; protect regs
 push8 r0
 push8 r1
 push16 r2
 push8 r3
 push16 r4
+; recurse
 call searchCommon ; TODO: better (alpha-beta)
+; if ply==1 (0 before makeMove), update bestMove here to at least choose a legal move - TODO: improve this
+mov r0 searchPly
+load8 r0 r0
+mov r1 1
+cmp r0 r0 r1
+skipeq r0
+jmp searchSwitchModeSearchNotRoot
+pop16 r0 ; grab move
+push16 r0
+mov r1 searchBestMove
+store16 r1 r0
+label searchSwitchModeSearchNotRoot
+; restore regs
 pop16 r4
 pop8 r3
 pop16 r2
