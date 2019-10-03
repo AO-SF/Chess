@@ -110,12 +110,9 @@ mov r1 256
 cmp r1 r0 r1
 skipneq r1
 jmp runCommandWaitForInputLoop
-; Clear status line
+; Clear status lines
 push8 r0
-mov r0 0
-mov r1 LineYStatus
-call cursesSetPosXY
-call cursesClearLine
+call clearStatusLines
 pop8 r0
 ; Handle command
 mov r1 'c'
@@ -326,4 +323,23 @@ call cursesSetEcho
 ; Convert string to move and return
 mov r0 scratchBuf
 call moveFromStr
+ret
+
+label clearStatusLines
+mov r0 0
+mov r1 LineYStatus
+call cursesSetPosXY
+call cursesClearLine
+mov r0 '\n'
+call putc0
+call cursesClearLine
+mov r0 '\n'
+call putc0
+call cursesClearLine
+mov r0 '\n'
+call putc0
+call cursesClearLine
+mov r0 '\n'
+call putc0
+call cursesClearLine
 ret
