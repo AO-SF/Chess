@@ -10,37 +10,52 @@ ab searchDepth 1
 aw searchLeafCount 1 ; count of all depth=0 nodes
 
 label searchList ; print all legal moves
+; Set search depth to 1
+mov r0 1
+mov r1 searchDepth
+store8 r1 r0
+; Set search mode (to list moves)
 mov r0 searchMode
 mov r1 SearchModeListMoves
 store8 r0 r1
+; Call common function to enumerate and print moves
 jmp searchCommon
 
-label search ; returns move in r0
-mov r0 searchMode
-mov r1 SearchModeSearch
-store8 r0 r1
-jmp searchCommon
+label search ; returns move in r0, calls searchN iteratively until out of time
+; TODO: iterate depth rather than fixed at 1, but need time based cutoff for this to work
+mov r0 1
+jmp searchN
 
-label searchPerft ; (r0=depth) - returns count in r0
+label searchN ; (r0=depth) - returns move in r0, depth>=1
 ; Set search depth
 mov r1 searchDepth
 store8 r1 r0
-; Reset global counter
-mov r0 searchLeafCount
-mov r1 0
-store16 r0 r1
-; Set search mode (reusing search mode)
+; Set search mode (to search)
 mov r0 searchMode
 mov r1 SearchModeSearch
 store8 r0 r1
-; Call searchCommon
+; Call searchCommon to do actual searching
 call searchCommon
+; Grab best move to return
+mov r0 MoveInvalid ; TODO: this
+ret
+
+label searchPerft ; (r0=depth) - returns count in r0
+; Protect depth
+push8 r0
+; Reset global node counter
+mov r0 searchLeafCount
+mov r1 0
+store16 r0 r1
+; Call searchN to enumerate all positions
+pop8 r0 ; restore depth
+call searchN
 ; Return global counter
 mov r0 searchLeafCount
 load16 r0 r0
 ret
 
-label searchCommon ; search (returning move in r0) or print legal moves
+label searchCommon ; search (returning score in r0) or print legal moves
 ; Leaf node?
 mov r0 searchDepth
 load8 r0 r0
@@ -52,8 +67,8 @@ mov r1 searchLeafCount
 load16 r2 r1
 inc r2
 store16 r1 r2
-; End of leaf node code
-mov r0 MoveInvalid
+; End of leaf node code - return static evaluation
+mov r0 0 ; TODO: update this once we have evaluation
 ret
 label searchNotLeafNode
 ; TODO: Generate other moves: pawns (promotions and en-passent captures), castling
@@ -281,6 +296,6 @@ mov r5 119 ; =~8
 and r0 r0 r5
 jmp searchFromSqLoopStart
 label searchFromSqLoopEnd
-; For now simply return invalid move until above is finished
-mov r0 MoveInvalid ; TODO: update this when above ready
+; For now simply return score of 0 until evaluation and search are finished
+mov r0 0 ; TODO: update this
 ret
