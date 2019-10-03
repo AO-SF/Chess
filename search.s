@@ -7,12 +7,17 @@ const SearchModeListMoves 1 ; print list of legal moves for current position
 ab searchMode 1
 
 ab searchDepth 1
+ab searchPly 1
 aw searchLeafCount 1 ; count of all depth=0 nodes
 
 label searchList ; print all legal moves
 ; Set search depth to 1
 mov r0 1
 mov r1 searchDepth
+store8 r1 r0
+; Set ply to 0
+mov r0 0
+mov r1 searchPly
 store8 r1 r0
 ; Set search mode (to list moves)
 mov r0 searchMode
@@ -29,6 +34,10 @@ jmp searchN
 label searchN ; (r0=depth) - returns move in r0, depth>=1
 ; Set search depth
 mov r1 searchDepth
+store8 r1 r0
+; Set ply to 0
+mov r0 0
+mov r1 searchPly
 store8 r1 r0
 ; Set search mode (to search)
 mov r0 searchMode
