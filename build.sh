@@ -1,1 +1,1 @@
-../project/bin/assembler -I../project/src/userspace/bin main.s main
+aosf-asm -I/usr/include/aosf-stdlib main.s main
